@@ -1,1 +1,1 @@
-sudo docker build -t puffertank .
+docker build -t puffertank .

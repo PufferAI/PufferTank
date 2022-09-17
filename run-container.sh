@@ -1,1 +1,1 @@
-sudo docker run --name puff -d puffertank
+docker run --name puff -d puffertank

@@ -1,1 +1,1 @@
-sudo docker exec -ti puff /bin/bash
+docker exec -ti puff bash
