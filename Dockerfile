@@ -1,6 +1,8 @@
 #FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
 #FROM ubuntu:20.04
 FROM gcr.io/deeplearning-platform-release/pytorch-gpu.1-12:latest
+#FROM ubuntu:20.04
+#FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
 WORKDIR /puffertank
 
 RUN apt-get update
