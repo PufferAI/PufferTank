@@ -2,7 +2,7 @@ FROM gcr.io/deeplearning-platform-release/pytorch-gpu.1-12:latest
 WORKDIR /puffertank
 
 RUN apt-get update
-RUN apt-get install -y vim
+RUN apt-get install -y vim cmake autoconf libtool flex bison libbz2-dev
 
 COPY vimrc ~/.vimrc
 
