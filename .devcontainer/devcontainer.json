@@ -22,7 +22,6 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Uncomment the next line to run commands after the container is created - for example installing curl.
 	// Move docker files into local workspace (otherwise vscode overwrites them)
 	"postCreateCommand": "mv /puffertank/* . && rm -r /puffertank"
 

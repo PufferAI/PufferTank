@@ -21,5 +21,8 @@ RUN apt-get install -y \
 COPY vimrc ~/.vimrc
 
 RUN git clone https://github.com/pufferai/pufferlib && cd pufferlib && pip3 install -e . && cd ..
+
+# Using the CarperAI branches for active dev currently
+# All changes will eventually be merged into the base Neural MMO repos
 RUN git clone https://github.com/CarperAI/nmmo-environment environment && cd environment && pip3 install -e .[cleanrl] && cd ..
 RUN git clone https://github.com/CarperAI/nmmo-baselines baselines
