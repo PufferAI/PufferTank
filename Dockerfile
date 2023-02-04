@@ -20,7 +20,7 @@ RUN apt-get install -y \
 
 COPY vimrc ~/.vimrc
 
-RUN git clone https://github.com/pufferai/pufferlib && cd pufferlib && pip3 install -e . && cd ..
+RUN git clone https://github.com/pufferai/pufferlib && cd pufferlib && pip3 install -e .[all] && cd ..
 RUN git clone https://github.com/pufferai/pufferai.github.io
 
 # Using the CarperAI branches for active dev currently

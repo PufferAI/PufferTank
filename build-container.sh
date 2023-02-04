@@ -1,1 +1,1 @@
-docker build -t puffertank .
+sudo docker build -t pufferai/puffertank:latest .

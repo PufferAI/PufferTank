@@ -1,1 +1,1 @@
-sudo docker run --name puffertank -d pufferai/puffertank:latest .
+sudo docker run --name puffertank pufferai/puffertank:latest
