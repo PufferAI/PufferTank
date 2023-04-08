@@ -16,12 +16,15 @@ RUN apt-get install -y \
     # Deepmind lab Bazel
     apt-transport-https curl gnupg \
     # Deepmind control rendering
-    libglfw3 libglew2.0 \
+    # Note - no libglew2.0?
+    libglfw3 libglew-dev
 
 
 # Avalon -- TODO: Figure out how to autoselect libnvidia-gl version
 # To be added with gym 0.25 support
 #RUN apt install -y --no-install-recommends libegl-dev libglew-dev libglfw3-dev libnvidia-gl-470 libopengl-dev libosmesa6 mesa-utils-extra
+
+RUN pip3 install wheel
 
 # Bazel dependencies
 RUN apt-get -y update \
@@ -32,7 +35,7 @@ RUN apt-get -y update \
     software-properties-common unzip zip zlib1g-dev g++
 
 # Install Bazel
-RUN apt-get install -y apt-transport-https curl gnupg  \
+RUN apt-get install -y apt-transport-https curl gnupg \
     && curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg  \
     && mv bazel.gpg /etc/apt/trusted.gpg.d/  \
     && echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
