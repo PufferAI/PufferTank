@@ -19,6 +19,7 @@ RUN apt-get install -y \
     # Note - no libglew2.0?
     libglfw3 libglew-dev
 
+COPY vimrc ~/.vimrc
 
 # Avalon -- TODO: Figure out how to autoselect libnvidia-gl version
 # To be added with gym 0.25 support
@@ -50,13 +51,15 @@ RUN git clone https://github.com/deepmind/lab.git  deepmind_lab \
     && pip3 install --force-reinstall /tmp/dmlab_pkg/deepmind_lab-*.whl \
     && cd .. \
 
-COPY vimrc ~/.vimrc
+# Full install of PufferLib with local docs
+RUN mkdir pufferai
+RUN git clone https://github.com/pufferai/pufferlib pufferai/pufferlib && pip3 install -e pufferai/pufferlib/[all]
+RUN git clone https://github.com/pufferai/pufferai.github.io pufferai/docs
+RUN git clone https://github.com/pufferai/dev pufferai/dev-docs
 
-RUN git clone https://github.com/pufferai/pufferlib && cd pufferlib && pip3 install -e .[all] && cd ..
-RUN git clone https://github.com/pufferai/pufferai.github.io docs
-RUN git clone https://github.com/pufferai/pufferai.github.io dev-docs
-
-# Using the CarperAI branches for active dev currently
-# All changes will eventually be merged into the base Neural MMO repos
-RUN git clone https://github.com/CarperAI/nmmo-environment environment && cd environment && pip3 install -e .[cleanrl] && cd ..
-RUN git clone https://github.com/CarperAI/nmmo-baselines baselines
+# Full install of Neural MMO with local docs
+RUN mkdir neuralmmo
+RUN git clone https://github.com/neuralmmo/environment neuralmmo/environment && pip3 install -e neuralmmo/environment/[all]
+RUN git clone https://github.com/neuralmmo/baselines neuralmmo/baselines
+RUN git clone https://github.com/neuralmmo/neuralmmo.github.io neuralmmo/docs
+RUN git clone https://github.com/neuralmmo/beta neuralmmo/dev-docs
