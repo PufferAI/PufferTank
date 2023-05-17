@@ -61,5 +61,6 @@ RUN git clone https://github.com/pufferai/dev pufferai/dev-docs
 RUN mkdir neuralmmo
 RUN git clone https://github.com/neuralmmo/environment neuralmmo/environment && pip3 install -e neuralmmo/environment/[all]
 RUN git clone https://github.com/neuralmmo/baselines neuralmmo/baselines
+RUN git clone https://github.com/neuralmmo/client neuralmmo/client
 RUN git clone https://github.com/neuralmmo/neuralmmo.github.io neuralmmo/docs
 RUN git clone https://github.com/neuralmmo/beta neuralmmo/dev-docs
