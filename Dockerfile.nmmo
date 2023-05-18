@@ -21,5 +21,5 @@ RUN git clone https://github.com/pufferai/pufferlib && \
     pip3 install -e pufferlib/[atari,cleanrl]
 
 RUN git clone https://github.com/neuralmmo/environment --single-branch --depth=1 environment && \
-    pip3 install -e neuralmmo/environment/[all]
+    pip3 install -e environment/[all]
 RUN git clone https://github.com/neuralmmo/baselines --single-branch --depth=1 baselines
