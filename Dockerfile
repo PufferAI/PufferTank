@@ -6,10 +6,10 @@ WORKDIR /puffertank
 RUN apt-get update
 RUN apt-get install -y \
     # Basics
-    vim git cmake htop screen && \
+    vim git cmake htop screen \
     # Clean
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY vimrc /root/.vimrc
 
