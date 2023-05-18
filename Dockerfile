@@ -19,7 +19,7 @@ RUN apt-get install -y \
     # Note - no libglew2.0?
     libglfw3 libglew-dev
 
-COPY vimrc ~/.vimrc
+COPY vimrc /root/.vimrc
 
 # Avalon -- TODO: Figure out how to autoselect libnvidia-gl version
 # To be added with gym 0.25 support
@@ -49,7 +49,9 @@ RUN git clone https://github.com/deepmind/lab.git  deepmind_lab \
     && bazel build -c opt //python/pip_package:build_pip_package  \
     && ./bazel-bin/python/pip_package/build_pip_package /tmp/dmlab_pkg \
     && pip3 install --force-reinstall /tmp/dmlab_pkg/deepmind_lab-*.whl \
-    && cd .. \
+    && cd ..
+
+RUN echo 'export PYTHONPATH=.:${PYTHONPATH}' >> /root/.bashrc
 
 # Full install of PufferLib with local docs
 RUN mkdir pufferai
