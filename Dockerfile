@@ -17,9 +17,8 @@ RUN pip3 install wheel
 
 RUN echo 'export PYTHONPATH=.:${PYTHONPATH}' >> /root/.bashrc
 
-RUN git clone https://github.com/pufferai/pufferlib && \
+RUN git clone https://github.com/pufferai/pufferlib --single-branch --depth=1 && \
     pip3 install -e pufferlib/[atari,cleanrl]
-
 RUN git clone https://github.com/neuralmmo/environment --single-branch --depth=1 environment && \
-    pip3 install -e environment/[all]
+    pip3 install -e environment
 RUN git clone https://github.com/neuralmmo/baselines --single-branch --depth=1 baselines
