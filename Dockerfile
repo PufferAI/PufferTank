@@ -17,7 +17,9 @@ RUN apt-get install -y \
     apt-transport-https curl gnupg \
     # Deepmind control rendering
     # Note - no libglew2.0?
-    libglfw3 libglew-dev
+    libglfw3 libglew-dev \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY vimrc /root/.vimrc
 
