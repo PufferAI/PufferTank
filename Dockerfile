@@ -6,7 +6,7 @@ WORKDIR /puffertank
 RUN apt-get update
 RUN apt-get install -y \
     # Basics
-    vim git cmake htop scren && \
+    vim git cmake htop screen \
     # NetHack
     autoconf libtool flex bison libbz2-dev \
     # Griddly
