@@ -4,10 +4,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /puffertank
 
 RUN apt-get update
-RUN apt-get install -y vim git cmake autoconf libtool flex bison libbz2-dev
+RUN apt-get install -y \
+    # Basics
+    vim git cmake htop screen \
+    # Clean
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY vimrc ~/.vimrc
+COPY vimrc /root/.vimrc
 
-RUN git clone https://github.com/pufferai/pufferlib && cd pufferlib && pip3 install -e . && cd ..
-RUN git clone https://github.com/CarperAI/nmmo-environment environment && cd environment && pip3 install -e .[cleanrl] && cd ..
-RUN git clone https://github.com/CarperAI/nmmo-baselines baselines
+RUN pip3 install wheel
+
+RUN echo 'export PYTHONPATH=.:${PYTHONPATH}' >> /root/.bashrc
+
+RUN git clone https://github.com/pufferai/pufferlib && \
+    pip3 install -e pufferlib/[atari,cleanrl]
+
+RUN git clone https://github.com/neuralmmo/environment --single-branch --depth=1 environment && \
+    pip3 install -e neuralmmo/environment/[all]
+RUN git clone https://github.com/neuralmmo/baselines --single-branch --depth=1 baselines
