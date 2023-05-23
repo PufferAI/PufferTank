@@ -57,7 +57,7 @@ RUN echo 'export PYTHONPATH=.:${PYTHONPATH}' >> /root/.bashrc
 
 # Full install of PufferLib with local docs
 RUN mkdir pufferai
-RUN git clone https://github.com/pufferai/pufferlib pufferai/pufferlib && pip3 install -e pufferai/pufferlib/[all]
+RUN git clone https://github.com/pufferai/pufferlib pufferai/pufferlib && pip3 install -e pufferai/pufferlib/[atari]
 RUN git clone https://github.com/pufferai/pufferai.github.io pufferai/docs
 RUN git clone https://github.com/pufferai/dev pufferai/dev-docs
 
