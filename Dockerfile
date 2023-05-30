@@ -6,7 +6,7 @@ WORKDIR /puffertank
 RUN apt-get update
 RUN apt-get install -y \
     # Basics
-    vim git cmake htop screen software-properties-common \
+    vim git cmake htop screen software-properties-common sudo \
     # Python
     && apt-add-repository ppa:deadsnakes/ppa \ 
     && apt-get install -y python3.9 \
