@@ -1,11 +1,26 @@
-FROM cnstark/pytorch:1.12.0-py3.9.12-cuda11.6.2-ubuntu20.04
+FROM nvcr.io/nvidia/cuda:11.7.1-runtime-ubuntu20.04
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN apt-get install -y \
-    sudo git cmake vim htop screen \
+RUN apt-get update && \
+    apt-get install -y \
+    # Basics
+    vim git cmake htop screen software-properties-common sudo \
+    # Python
+    && apt-add-repository ppa:deadsnakes/ppa \ 
+    && apt-get install -y python3.9 \
+    && apt-get install -y python3-pip \
+    # Clean
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Pytorch 
+ENV TORCH_VERSION=1.13.1
+ENV TORCHVISION_VERSION=0.14.1
+ENV TORCH_CUDA_VERSION=cu117
+
+RUN pip3 install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/${TORCH_CUDA_VERSION} \
+        torch==${TORCH_VERSION}+${TORCH_CUDA_VERSION} \
+        torchvision==${TORCHVISION_VERSION}+${TORCH_CUDA_VERSION}
 
 COPY vimrc /root/.vimrc
 
