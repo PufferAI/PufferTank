@@ -30,7 +30,7 @@ RUN git clone https://github.com/pufferai/pufferlib && pip3 install --user -e pu
 
 # Full install of Neural MMO with local docs
 RUN git clone --single-branch --depth=1 https://github.com/carperai/nmmo-environment && pip3 install --user -e nmmo-environment/[all]
-RUN git clone --depth=1 https://github.com/carperai/nmmo-baselines
+RUN git clone --depth=1 https://github.com/carperai/nmmo-baselines && pip3 install --user -r nmmo-baselines/requirements.txt
 
 RUN mkdir /puffertank
 COPY . /puffertank
