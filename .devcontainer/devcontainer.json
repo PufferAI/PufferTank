@@ -8,7 +8,7 @@
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-	"dockerFile": "../Dockerfile",
+	"dockerFile": "../puffertank-dev.dockerfile",
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
@@ -21,9 +21,6 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
-	// Move docker files into local workspace (otherwise vscode overwrites them)
-	"postCreateCommand": "mv /puffertank/* . && rm -r /puffertank"
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
