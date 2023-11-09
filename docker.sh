@@ -3,7 +3,8 @@
 # Default values
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
-name="base"
+name="dev"
+image="dev"
 tag="latest"
 
 # Function for building Docker image
@@ -20,8 +21,8 @@ build() {
         docker stop ${name}
         docker rm ${name}
     fi
-    echo "Building Docker image ${username}/${name}:${tag} with Dockerfile ${dockerfile}..."
-    docker build -t ${username}/${name}:${tag} -f ${dockerfile} .
+    echo "Building Docker image ${username}/${image}:${tag} with Dockerfile ${dockerfile}..."
+    docker build -t ${username}/${image}:${tag} -f ${dockerfile} .
 }
 
 # Function for testing Docker image
@@ -33,8 +34,18 @@ test() {
         docker start ${name}
     else
         # If the container does not exist, run a new one
-        echo "Running Docker image ${username}/${name}:${tag} and executing shell..."
-        docker run --name ${name} -it ${username}/${name}:${tag} bash
+        echo "Running Docker image ${username}/${image}:${tag} and executing shell..."
+        docker run -it \
+            --name ${name} \
+            --gpus all \
+            -v /tmp/.X11-unix:/tmp/.X11-unix \
+            -v /mnt/wslg:/mnt/wslg \
+            -v "$(pwd):/puffertank/docker" \
+            -e DISPLAY \
+            -e WAYLAND_DISPLAY \
+            -e XDG_RUNTIME_DIR \
+            -e PULSE_SERVER \
+            ${username}/${image}:${tag} bash
     fi
     # Attach to the running container
     docker exec -it ${name} bash
@@ -48,7 +59,7 @@ push() {
 
 # Function for displaying usage instructions
 usage() {
-    echo "Usage: $0 command [-d dockerfile] [-n name] [-t tag] [-u username]"
+    echo "Usage: $0 command [-d dockerfile] [-n name] [-i image] [-t tag] [-u username]"
     echo "Commands:"
     echo "  build"
     echo "  test"
@@ -69,6 +80,7 @@ while getopts n:t:u:d: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
+        i) image=${OPTARG};;
         t) tag=${OPTARG};;
         u) username=${OPTARG};;
         d) dockerfile=${OPTARG};;

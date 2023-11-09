@@ -2,6 +2,9 @@ FROM pufferai/base:latest
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
+    # Avalon
+    # libegl-dev libglew-dev libglfw3-dev \
+    # libopengl-dev libosmesa6 mesa-utils-extra \
     # NetHack
     autoconf libtool flex bison libbz2-dev \
     # Griddly
@@ -23,7 +26,6 @@ RUN apt-get update && \
 
 # Avalon -- TODO: Figure out how to autoselect libnvidia-gl version
 # To be added with gym 0.25 support
-# RUN apt install --no-install-recommends -y libegl-dev libglew-dev libglfw3-dev libnvidia-gl-470 libopengl-dev libosmesa6 mesa-utils-extra
 
 RUN pip3 install wheel
 
