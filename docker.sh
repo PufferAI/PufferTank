@@ -3,8 +3,8 @@
 # Default values
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
-name="dev"
-image="dev"
+name="puffertank"
+image="puffertank"
 tag="latest"
 
 # Function for building Docker image
@@ -76,7 +76,7 @@ command=$1
 shift
 
 # Parse command-line arguments for Dockerfile, name, tag, and username
-while getopts n:t:u:d: flag
+while getopts n:i:t:u:d: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
