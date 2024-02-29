@@ -34,14 +34,6 @@ if ! command -v docker &> /dev/null; then
     usermod -aG docker puffer
 fi
 
-
-# Define the experimental repository line
-EXPERIMENTAL_REPO="deb http://deb.debian.org/debian/ experimental main non-free contrib"
-
-# Check if the experimental repo line already exists in sources.list, add it if it doesn't
-grep -qxF "$EXPERIMENTAL_REPO" /etc/apt/sources.list || echo "$EXPERIMENTAL_REPO" >> /etc/apt/sources.list
-
-
 # Update the package list to reflect new repositories
 apt-get update -y
 
