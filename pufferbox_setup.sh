@@ -1,46 +1,69 @@
 #!/bin/bash
 
-# cd /home/puffer
-
-apt update -y
-
-# Install kernel headers and build essential tools
-apt-get install -y linux-headers-$(uname -r) build-essential dkms
-
-# Docker
-apt install -y apt-transport-https ca-certificates curl gnupg
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt update
-apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
-usermod -aG docker puffer
-
-
-# Add non-free repositories for NVIDIA drivers
-sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list
-
-# Define the experimental repository line
-EXPERIMENTAL_REPO="deb http://deb.debian.org/debian/ experimental main non-free contrib"
-
-# Check if the experimental repo line already exists in sources.list, add it if it doesn't
-grep -qxF "$EXPERIMENTAL_REPO" /etc/apt/sources.list || echo "$EXPERIMENTAL_REPO" >> /etc/apt/sources.list
-
-
-# Update the package list to reflect new repositories
+# Update packages
 apt-get update -y
 
-# Install the NVIDIA driver using the Debian non-free repository
-apt-get install -t experimental -y --no-install-recommends nvidia-driver=535
+# Install essentials
+apt-get install -y \
+    linux-headers-$(uname -r) \
+    build-essential \
+    openssh-server \
+    git \
+    vim \
+    dkms \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg
 
-echo "Installation complete. Please reboot your system."
+# Clone puffertank repo
+cd /home/puffer && \
+    git clone https://github.com/pufferai/puffertank
 
-# Nvidia container (have to use Debian 11 bullseye for now)
+# Install Tailscale
+curl -fsSL https://tailscale.com/install.sh | sh
+
+# Install Docker
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | \
+    tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt-get update -y
+
+apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin
+
+usermod -aG docker puffer
+
+grep -qxF "cd /home/puffer && bash docker.sh test" /etc/bash.bashrc || \
+    echo "cd /home/puffer && bash docker.sh test" >> /etc/bash.bashrc
+
+
+# Install NVIDIA 535 drivers. They require unstable and experimental packages.
+sed -i '/^deb .*main/ s/main/main contrib non-free/' /etc/apt/sources.list
+UNSTABLE_REPO="deb http://deb.debian.org/debian/ unstable main contrib non-free"
+EXPERIMENTAL_REPO="deb http://deb.debian.org/debian/ experimental main contrib non-free"
+grep -qxF "$UNSTABLE_REPO" /etc/apt/sources.list || echo "$UNSTABLE_REPO" >> /etc/apt/sources.list
+grep -qxF "$EXPERIMENTAL_REPO" /etc/apt/sources.list || echo "$EXPERIMENTAL_REPO" >> /etc/apt/sources.list
+
+apt-get install -t experimental -y nvidia-driver
+
+# Install container toolkit. Requires Debian11 (bullseye) repository
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey > /etc/apt/keyrings/nvidia-docker.key
-curl -s -L https://nvidia.github.io/nvidia-docker/debian11/nvidia-docker.list > /etc/apt/sources.list.d/nvidia-docker.list
-sed -i -e "s/^deb/deb \[signed-by=\/etc\/apt\/keyrings\/nvidia-docker.key\]/g" /etc/apt/sources.list.d/nvidia-docker.list
+echo "deb [signed-by=/etc/apt/keyrings/nvidia-docker.key] https://nvidia.github.io/nvidia-docker/debian11/nvidia-docker.list" > \
+    /etc/apt/sources.list.d/nvidia-docker.list
 
 apt-get update && apt-get install -y nvidia-container-toolkit
 systemctl restart docker
 
-
-
+# Instructions to complete the manual portion of installation 
+echo -e "Installation complete.\nTo complete installation:\n\
+1) Set passwords:\n\
+   - passwd puffer\n\
+   - passwd root\n\
+2) Initialize Tailscale:\n\
+   - tailscale up\n\
+3) Reboot the machine."
