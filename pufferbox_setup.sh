@@ -4,6 +4,9 @@
 
 apt update -y
 
+# Install kernel headers and build essential tools
+apt-get install -y linux-headers-$(uname -r) build-essential dkms
+
 # Docker
 apt install -y apt-transport-https ca-certificates curl gnupg
 curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
@@ -16,14 +19,18 @@ usermod -aG docker puffer
 # Add non-free repositories for NVIDIA drivers
 sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list
 
+# Define the experimental repository line
+EXPERIMENTAL_REPO="deb http://deb.debian.org/debian/ experimental main non-free contrib"
+
+# Check if the experimental repo line already exists in sources.list, add it if it doesn't
+grep -qxF "$EXPERIMENTAL_REPO" /etc/apt/sources.list || echo "$EXPERIMENTAL_REPO" >> /etc/apt/sources.list
+
+
 # Update the package list to reflect new repositories
 apt-get update -y
 
-# Install kernel headers and build essential tools
-apt-get install -y linux-headers-$(uname -r) build-essential dkms
-
 # Install the NVIDIA driver using the Debian non-free repository
-apt-get install -y nvidia-driver
+apt-get install -t experimental -y --no-install-recommends nvidia-driver=535
 
 echo "Installation complete. Please reboot your system."
 
