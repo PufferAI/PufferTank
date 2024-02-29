@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# cd /home/puffer
+
 apt update -y
 
 # Docker
@@ -25,10 +27,12 @@ apt-get install -y nvidia-driver
 
 echo "Installation complete. Please reboot your system."
 
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-  && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | apt-key add - \
-  && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | tee /etc/apt/sources.list.d/nvidia-docker.list
+# Nvidia container (have to use Debian 11 bullseye for now)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | apt-key add -
+
+echo "deb https://nvidia.github.io/libnvidia-container/debian11/$(arch) /" > /etc/apt/sources.list.d/nvidia-docker.list
+echo "deb https://nvidia.github.io/nvidia-container-runtime/debian11/$(arch) /" >> /etc/apt/sources.list.d/nvidia-docker.list
+echo "deb https://nvidia.github.io/nvidia-docker/debian11/$(arch) /" >> /etc/apt/sources.list.d/nvidia-docker.list
 
 apt-get update && apt-get install -y nvidia-container-toolkit
-
 systemctl restart docker
