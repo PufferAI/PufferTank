@@ -26,11 +26,14 @@ fi
 cat "cd /home/puffer && bash docker.sh test" >> /etc/bash.bashrc
 
 # Docker
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt update
-apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
-usermod -aG docker puffer
+if ! command -v docker &> /dev/null; then
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+    apt update
+    apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+    usermod -aG docker puffer
+fi
+
 
 # Define the experimental repository line
 EXPERIMENTAL_REPO="deb http://deb.debian.org/debian/ experimental main non-free contrib"
