@@ -50,6 +50,11 @@ sed -i -e "s/^deb/deb \[signed-by=\/etc\/apt\/keyrings\/nvidia-docker.key\]/g" /
 apt-get update && apt-get install -y nvidia-container-toolkit
 systemctl restart docker
 
-
-# Run passwd puffer or w/e the user is to set password.
-# passwd root as well
+# Completion message with instructions
+echo -e "Installation complete.\nTo complete installation:\n\
+1) Set passwords:\n\
+   - passwd puffer\n\
+   - passwd root\n\
+2) Initialize Tailscale:\n\
+   - tailscale up\n\
+3) Reboot the machine."
