@@ -8,6 +8,8 @@ curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update
 apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+usermod -aG docker puffer
+
 
 # Add non-free repositories for NVIDIA drivers
 sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list
@@ -19,10 +21,14 @@ apt-get update -y
 apt-get install -y linux-headers-$(uname -r) build-essential dkms
 
 # Install the NVIDIA driver using the Debian non-free repository
-apt-get install -y nvidia-detect
-nvidia_driver=$(nvidia-detect)
-apt-get install -y "$nvidia_driver"
+apt-get install -y nvidia-driver
 
-# Inform the user to reboot the system
 echo "Installation complete. Please reboot your system."
 
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+  && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | apt-key add - \
+  && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | tee /etc/apt/sources.list.d/nvidia-docker.list
+
+apt-get update && apt-get install -y nvidia-container-toolkit
+
+systemctl restart docker
