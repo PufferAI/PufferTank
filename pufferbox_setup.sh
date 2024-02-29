@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Update packages
-apt-get update -y
+apt update -y
 
 # Install essentials
 apt-get install -y \
@@ -15,79 +14,38 @@ apt-get install -y \
     curl \
     gnupg
 
-# Function to add a repo if not already present in /etc/apt/sources.list
-add_repo() {
-    REPO_URL="$1"
-    REPO_ENTRY="$2 main contrib non-free"
-    if ! grep -qRFe "$REPO_URL" /etc/apt/; then
-        echo "$REPO_ENTRY" | tee -a /etc/apt/sources.list > /dev/null
-    fi
-}
-
-# Modify /etc/apt/sources.list to include contrib and non-free for existing Debian entries
-sed -i '/^deb .*main/ s/main/main contrib non-free/' /etc/apt/sources.list
-
-# Add unstable and experimental repositories. Required for NVIDIA drivers
-add_repo "http://deb.debian.org/debian/" "deb http://deb.debian.org/debian/ unstable"
-add_repo "http://deb.debian.org/debian/" "deb http://deb.debian.org/debian/ experimental"
+# Fix sources.list
+cp sources.list /etc/apt/sources.list
 
 # Install Tailscale
 if ! command -v tailscale &> /dev/null; then
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
 
-# Docker installation
-DOCKER_GPG_KEY="/usr/share/keyrings/docker.gpg"
-if [ ! -f "$DOCKER_GPG_KEY" ]; then
-    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o $DOCKER_GPG_KEY
+
+cat "cd /home/puffer && bash docker.sh test" >> /etc/bash.bashrc
+
+# Docker
+if ! command -v docker &> /dev/null; then
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+    apt update
+    apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+    usermod -aG docker puffer
 fi
 
-DOCKER_REPO="deb [arch=$(dpkg --print-architecture) signed-by=$DOCKER_GPG_KEY] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-DOCKER_REPO_FILE="/etc/apt/sources.list.d/docker.list"
-if ! grep -qF -- "$DOCKER_REPO" "$DOCKER_REPO_FILE" 2>/dev/null; then
-    echo "$DOCKER_REPO" | tee $DOCKER_REPO_FILE > /dev/null
-fi
-
+# Update the package list to reflect new repositories
 apt-get update -y
-apt-get install -y \
-    docker-ce \
-    docker-ce-cli \
-    containerd.io \
-    docker-buildx-plugin
 
-# Add user to the Docker group
-usermod -aG docker puffer
-
-# Ensure docker.sh test script is run at login
-if ! grep -qxF "cd /home/puffer && bash docker.sh test" /etc/bash.bashrc; then
-    echo "cd /home/puffer && bash docker.sh test" >> /etc/bash.bashrc
-fi
-
-# Pull the latest Docker image
-docker pull pufferai/puffertank:latest
-
-# Install NVIDIA drivers
+# Install the NVIDIA driver using the Debian non-free repository
 apt-get install -t experimental -y nvidia-driver
 
-# NVIDIA container toolkit setup
+echo "Installation complete. Please reboot your system."
 
-
-# Install container toolkit. Requires Debian 11 (bullseye) repository
-NVIDIA_DOCKER_GPG_KEY="/etc/apt/keyrings/nvidia-docker.gpg"
-if [ ! -f "$NVIDIA_DOCKER_GPG_KEY" ]; then
-    curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | gpg --dearmor -o $NVIDIA_DOCKER_GPG_KEY
-fi
-
-# Correctly form the repository entry with the path to the GPG key
-NVIDIA_DOCKER_REPO_FILE="/etc/apt/sources.list.d/nvidia-docker.list"
-echo "deb [signed-by=$NVIDIA_DOCKER_GPG_KEY] https://nvidia.github.io/nvidia-container-runtime/debian11 bullseye stable" > $NVIDIA_DOCKER_REPO_FILE
-
-
-#NVIDIA_DOCKER_REPO="deb [signed-by=$NVIDIA_DOCKER_GPG_KEY] https://nvidia.github.io/nvidia-container-runtime/debian11 $(lsb_release -cs) stable"
-#NVIDIA_DOCKER_REPO_FILE="/etc/apt/sources.list.d/nvidia-docker.list"
-#if ! grep -qF -- "$NVIDIA_DOCKER_REPO" "$NVIDIA_DOCKER_REPO_FILE" 2>/dev/null; then
-#    echo "$NVIDIA_DOCKER_REPO" | tee $NVIDIA_DOCKER_REPO_FILE > /dev/null
-#fi
+# Nvidia container (have to use Debian 11 bullseye for now)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey > /etc/apt/keyrings/nvidia-docker.key
+curl -s -L https://nvidia.github.io/nvidia-docker/debian11/nvidia-docker.list > /etc/apt/sources.list.d/nvidia-docker.list
+sed -i -e "s/^deb/deb \[signed-by=\/etc\/apt\/keyrings\/nvidia-docker.key\]/g" /etc/apt/sources.list.d/nvidia-docker.list
 
 apt-get update && apt-get install -y nvidia-container-toolkit
 systemctl restart docker
