@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# PREREQUISITES: Disable secure boot in BIOS settings! Otherwise, NVIDIA drivers will not work.
+
 # Update packages
 apt-get update -y
 
