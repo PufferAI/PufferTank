@@ -1,0 +1,17 @@
+# For some reason dkms skipped a version and is only in unstable
+deb http://deb.debian.org/debian/ unstable main contrib non-free
+
+# A bunch of stuff for cuda 12.1 is in experimental and non-free-firmware
+deb http://deb.debian.org/debian experimental main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian experimental main contrib non-free non-free-firmware
+
+deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+
+deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+deb-src http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+
+# bookworm-updates, to get updates before a point release is made;
+# see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
+deb http://deb.debian.org/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian/ bookworm-updates main contrib non-free non-free-firmware
