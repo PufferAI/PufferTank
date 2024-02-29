@@ -54,9 +54,8 @@ grep -qxF "$EXPERIMENTAL_REPO" /etc/apt/sources.list || echo "$EXPERIMENTAL_REPO
 apt-get install -t experimental -y nvidia-driver
 
 # Install container toolkit. Requires Debian11 (bullseye) repository
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey > /etc/apt/keyrings/nvidia-docker.key
-echo "deb [signed-by=/etc/apt/keyrings/nvidia-docker.key] https://nvidia.github.io/nvidia-docker/debian11/nvidia-docker.list" > \
-    /etc/apt/sources.list.d/nvidia-docker.list
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-docker.gpg
+echo "deb [signed-by=/usr/share/keyrings/nvidia-docker.gpg] https://nvidia.github.io/nvidia-container-runtime/debian11 $(lsb_release -cs) stable" > /etc/apt/sources.list.d/nvidia-docker.list
 
 apt-get update && apt-get install -y nvidia-container-toolkit
 systemctl restart docker
