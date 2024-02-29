@@ -70,11 +70,24 @@ docker pull pufferai/puffertank:latest
 apt-get install -t experimental -y nvidia-driver
 
 # NVIDIA container toolkit setup
-NVIDIA_DOCKER_REPO="deb [signed-by=$NVIDIA_DOCKER_GPG_KEY] https://nvidia.github.io/nvidia-container-runtime/debian11 $(lsb_release -cs) stable"
-NVIDIA_DOCKER_REPO_FILE="/etc/apt/sources.list.d/nvidia-docker.list"
-if ! grep -qF -- "$NVIDIA_DOCKER_REPO" "$NVIDIA_DOCKER_REPO_FILE" 2>/dev/null; then
-    echo "$NVIDIA_DOCKER_REPO" | tee $NVIDIA_DOCKER_REPO_FILE > /dev/null
+
+
+# Install container toolkit. Requires Debian 11 (bullseye) repository
+NVIDIA_DOCKER_GPG_KEY="/etc/apt/keyrings/nvidia-docker.gpg"
+if [ ! -f "$NVIDIA_DOCKER_GPG_KEY" ]; then
+    curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | gpg --dearmor -o $NVIDIA_DOCKER_GPG_KEY
 fi
+
+# Correctly form the repository entry with the path to the GPG key
+NVIDIA_DOCKER_REPO_FILE="/etc/apt/sources.list.d/nvidia-docker.list"
+echo "deb [signed-by=$NVIDIA_DOCKER_GPG_KEY] https://nvidia.github.io/nvidia-container-runtime/debian11 bullseye stable" > $NVIDIA_DOCKER_REPO_FILE
+
+
+#NVIDIA_DOCKER_REPO="deb [signed-by=$NVIDIA_DOCKER_GPG_KEY] https://nvidia.github.io/nvidia-container-runtime/debian11 $(lsb_release -cs) stable"
+#NVIDIA_DOCKER_REPO_FILE="/etc/apt/sources.list.d/nvidia-docker.list"
+#if ! grep -qF -- "$NVIDIA_DOCKER_REPO" "$NVIDIA_DOCKER_REPO_FILE" 2>/dev/null; then
+#    echo "$NVIDIA_DOCKER_REPO" | tee $NVIDIA_DOCKER_REPO_FILE > /dev/null
+#fi
 
 apt-get update && apt-get install -y nvidia-container-toolkit
 systemctl restart docker
