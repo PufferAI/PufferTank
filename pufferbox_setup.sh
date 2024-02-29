@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# PREREQUISITES: Disable secure boot in BIOS settings! Otherwise, NVIDIA drivers will not work.
+# Run this script as root. Prerequisites:
+#   1. Disable secure boot in BIOS settings! Otherwise, NVIDIA drivers will not work.
+#   2. apt-get update && apt-get install -y git
+#   3. cd /home/puffer && git clone https://github.com/pufferai/puffertank
 
 # Update packages
 apt-get update -y
@@ -10,17 +13,12 @@ apt-get install -y \
     linux-headers-$(uname -r) \
     build-essential \
     openssh-server \
-    git \
     vim \
     dkms \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg
-
-# Clone puffertank repo
-cd /home/puffer && \
-    git clone https://github.com/pufferai/puffertank
 
 # Install Tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
