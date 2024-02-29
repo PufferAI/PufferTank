@@ -43,6 +43,8 @@ usermod -aG docker puffer
 grep -qxF "cd /home/puffer && bash docker.sh test" /etc/bash.bashrc || \
     echo "cd /home/puffer && bash docker.sh test" >> /etc/bash.bashrc
 
+docker pull pufferai/puffertank:latest
+
 
 # Install NVIDIA 535 drivers. They require unstable and experimental packages.
 sed -i '/^deb .*main/ s/main/main contrib non-free/' /etc/apt/sources.list
