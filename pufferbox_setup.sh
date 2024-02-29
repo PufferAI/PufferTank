@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Run this script as root. Prerequisites:
+#   1. Disable secure boot in BIOS settings! Otherwise, NVIDIA drivers will not work.
+#   2. apt-get update && apt-get install -y git
+#   3. cd /home/puffer && git clone https://github.com/pufferai/puffertank
+
 apt update -y
 
 # Install essentials
