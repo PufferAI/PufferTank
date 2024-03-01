@@ -37,6 +37,7 @@ if ! command -v docker &> /dev/null; then
     apt update
     apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
     sudo usermod -aG docker puffer
+    docker pull pufferai/puffertank:latest
 fi
 
 # Update the package list to reflect new repositories
