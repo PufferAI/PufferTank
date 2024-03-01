@@ -36,7 +36,7 @@ if ! command -v docker &> /dev/null; then
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt update
     apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
-    usermod -aG docker puffer
+    sudo usermod -aG docker puffer
 fi
 
 # Update the package list to reflect new repositories
