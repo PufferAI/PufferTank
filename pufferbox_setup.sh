@@ -28,7 +28,7 @@ if ! command -v tailscale &> /dev/null; then
 fi
 
 
-cat "cd /home/puffer && bash docker.sh test" >> /home/puffer/.bashrc
+cat "cd /home/puffer/puffertank && bash docker.sh test" >> /home/puffer/.bashrc
 
 # Docker
 if ! command -v docker &> /dev/null; then
