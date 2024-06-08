@@ -3,9 +3,9 @@
 # Default values
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
-name="puffertank"
 image="puffertank"
 tag="1.0"
+name="${image}-${tag}"
 
 # Function for building Docker image
 build() {
