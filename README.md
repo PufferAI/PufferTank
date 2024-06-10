@@ -21,3 +21,11 @@ From the Extensions panel on the left: Dev Containers > Install
 F1 > Dev Containers: Open Folder in Container > puffertank
 
 For more information see [Containerized Development](https://code.visualstudio.com/docs/devcontainers/containers)
+
+### 4. Run without VS code
+
+```
+bash docker.sh test
+```
+
+Comes pre-loaded with my NeoVim config. :PlugInstall for code completion with SuperMaven.
