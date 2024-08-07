@@ -24,4 +24,4 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
 
 # PyTorch
 RUN python3.11 -m pip install --upgrade pip
-RUN pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121 -U
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121

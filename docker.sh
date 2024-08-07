@@ -28,7 +28,7 @@ build() {
 # Function for testing Docker image
 test() {
     # Check if a Docker container with the same name already exists
-    if [ "$(docker ps -aq -f name=^/${name}$)" ]; then
+    if [ "$(docker ps -aq -f name=^/${name})" ]; then
         # If the container exists and is stopped, start it
         echo "A Docker container with the name ${name} already exists. Starting it..."
         docker start ${name}
