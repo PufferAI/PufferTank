@@ -1,4 +1,4 @@
-FROM pufferai/base:1.0
+FROM pufferai/base:2.0
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -6,7 +6,7 @@ RUN apt-get update && \
     # libegl-dev libglew-dev libglfw3-dev \
     # libopengl-dev libosmesa6 mesa-utils-extra \
     # NetHack
-    autoconf libtool flex bison libbz2-dev \
+    clang autoconf libtool flex bison libbz2-dev \
     # Griddly
     libgl1-mesa-glx \
     # Gym MicroRTS
@@ -26,27 +26,28 @@ RUN apt-get update && \
 
 RUN pip3 install wheel
 
+# Broken as of latest Python -- let me know if you actually need this
 # Install Bazel
-RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg  \
-    && mv bazel.gpg /etc/apt/trusted.gpg.d/  \
-    && echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
-    && apt-get update && apt-get install --no-install-recommends -y bazel \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/*
+#RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg  \
+#    && mv bazel.gpg /etc/apt/trusted.gpg.d/  \
+#    && echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
+#    && apt-get update && apt-get install --no-install-recommends -y bazel \
+#    && apt clean \
+#    && rm -rf /var/lib/apt/lists/*
 
 # Install Deepmind Lab
-RUN rm -rf deepmind_lab \
-    && git clone https://github.com/deepmind/lab.git deepmind_lab \
-    && cd deepmind_lab \
-    && echo 'build --cxxopt=-std=c++17' > .bazelrc \
-    && bazel build -c opt //python/pip_package:build_pip_package  \
-    && ./bazel-bin/python/pip_package/build_pip_package /tmp/dmlab_pkg \
-    && pip3 install --force-reinstall /tmp/dmlab_pkg/deepmind_lab-*.whl \
-    && rm -rf /tmp/dmlab_pkg/deepmind_lab-*.whl \
-    && rm -rf .git \
-    && cd .. \
-    && rm -rf ~/.cache/bazel/ \
-    && rm -rf deepmind_lab
+#RUN rm -rf deepmind_lab \
+#    && git clone https://github.com/deepmind/lab.git deepmind_lab \
+#    && cd deepmind_lab \
+#    && echo 'build --cxxopt=-std=c++17' > .bazelrc \
+#    && bazel build -c opt //python/pip_package:build_pip_package  \
+#    && ./bazel-bin/python/pip_package/build_pip_package /tmp/dmlab_pkg \
+#    && pip3 install --force-reinstall /tmp/dmlab_pkg/deepmind_lab-*.whl \
+#    && rm -rf /tmp/dmlab_pkg/deepmind_lab-*.whl \
+#    && rm -rf .git \
+#    && cd .. \
+#    && rm -rf ~/.cache/bazel/ \
+#    && rm -rf deepmind_lab
 
 # Install Neovim and VimPlug
 RUN apt update \

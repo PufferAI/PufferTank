@@ -4,7 +4,7 @@
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
 image="puffertank"
-tag="1.0"
+tag="2.0"
 name="puffertank"
 
 # Function for building Docker image
@@ -26,6 +26,7 @@ build() {
 }
 
 # Function for testing Docker image
+# Need this on ubuntu for x11: xhost +local:docker
 test() {
     # Check if a Docker container with the same name already exists
     if [ "$(docker ps -aq -f name=^/${name})" ]; then
@@ -39,6 +40,7 @@ test() {
             --name ${name} \
             --gpus all \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
             -v "$(pwd):/puffertank/docker" \
             -e DISPLAY \

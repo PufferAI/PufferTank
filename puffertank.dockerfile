@@ -1,13 +1,16 @@
-FROM pufferai/puffer-deps:1.0
+FROM pufferai/puffer-deps:2.0
 
 RUN mkdir -p /puffertank
 WORKDIR /puffertank
 
 # Workaround for nethack/minihack
-ENV READTHEDOCS True
+ENV READTHEDOCS=True
 
-ADD https://api.github.com/repos/pufferai/pufferlib/git/refs/heads/1.0 version.json
-RUN git clone https://github.com/pufferai/pufferlib --branch 1.0 && pip3 install --user -e pufferlib/[common,ray]
+# CARBS hyperparam sweeps
+RUN git clone https://github.com/pufferai/carbs && pip3 install --user -e carbs/
+
+ADD https://api.github.com/repos/pufferai/pufferlib/git/refs/heads/2.0 version.json
+RUN git clone https://github.com/pufferai/pufferlib --branch 2.0 && SETUPTOOLS_ENABLE_FEATURES="legacy-editable" pip3 install --user -e pufferlib/[common]
 
 # Procgen fix
 RUN pip install glfw==2.7
