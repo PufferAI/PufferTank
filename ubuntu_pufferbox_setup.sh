@@ -2,12 +2,6 @@
 
 # REMEMBER TO UPDATE DOCKER PULL FLAG WHEN UPDATING THIS SCRIPT
 
-# Run this script as root. Prerequisites:
-#   1. Disable secure boot in BIOS settings! Otherwise, NVIDIA drivers will not work.
-#   2. Upgrade system and REBOOT:
-#          apt-get update && apt-get upgrade && apt-get dist-upgrade && apt-get install git
-#   3. cd /home/puffer && git clone https://github.com/pufferai/puffertank
-
 # Install essentials
 apt-get install -y \
     linux-headers-$(uname -r) \
@@ -68,4 +62,5 @@ echo -e "Installation complete.\nTo complete installation:\n\
    - passwd root\n\
 2) Initialize Tailscale:\n\
    - tailscale up\n\
-3) Reboot the machine."
+3) sudo usermod -aG docker $USER
+4) Reboot the machine."
