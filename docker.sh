@@ -49,6 +49,7 @@ test() {
             -e PULSE_SERVER \
             -p 8000:8000 \
             --memory=110g \
+            --shm-size=32g \
             ${username}/${image}:${tag} bash
     fi
     # Attach to the running container
