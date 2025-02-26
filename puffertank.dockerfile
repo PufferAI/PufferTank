@@ -1,4 +1,4 @@
-FROM pufferai/puffer-deps:2.0
+FROM pufferai/puffer-deps:dev
 
 RUN mkdir -p /puffertank
 WORKDIR /puffertank
@@ -9,8 +9,8 @@ ENV READTHEDOCS=True
 # CARBS hyperparam sweeps
 RUN git clone https://github.com/pufferai/carbs && pip3 install --user -e carbs/
 
-ADD https://api.github.com/repos/pufferai/pufferlib/git/refs/heads/2.0 version.json
-RUN git clone https://github.com/pufferai/pufferlib --branch 2.0 && SETUPTOOLS_ENABLE_FEATURES="legacy-editable" pip3 install --user -e pufferlib/[common]
+ADD https://api.github.com/repos/pufferai/pufferlib/git/refs/heads/dev version.json
+RUN git clone https://github.com/pufferai/pufferlib --branch dev && SETUPTOOLS_ENABLE_FEATURES="legacy-editable" pip3 install --user -e pufferlib/[cleanrl]
 
 # Procgen fix
 RUN pip install glfw==2.7
