@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/cuda:12.4.0-runtime-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:12.4.0-devel-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
