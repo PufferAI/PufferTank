@@ -4,7 +4,7 @@
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
 image="puffertank"
-tag="dev"
+tag="3.0"
 name="puffertank"
 
 # Function for building Docker image
@@ -22,7 +22,8 @@ build() {
         docker rm ${name}
     fi
     echo "Building Docker image ${username}/${image}:${tag} with Dockerfile ${dockerfile}..."
-    docker build -t ${username}/${image}:${tag} -f ${dockerfile} .
+    #docker build ${username}/${image}:${tag} -f ${dockerfile} .
+    docker buildx build --build-arg NVIDIA_VISIBLE_DEVICES=all --file ${dockerfile} -t ${username}/${image}:${tag} .
 }
 
 # Function for testing Docker image
@@ -39,7 +40,7 @@ test() {
         docker run -it \
             --name ${name} \
             --gpus all \
-            --runtime nvidia \
+	    --ipc host \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
