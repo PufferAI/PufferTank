@@ -30,6 +30,7 @@ build() {
 # Need this on ubuntu for x11: xhost +local:docker
 test() {
     # Check if a Docker container with the same name already exists
+    xhost +local:docker
     if [ "$(docker ps -aq -f name=${name})" ]; then
         # If the container exists and is stopped, start it
         echo "A Docker container with the name ${name} already exists. Starting it..."
