@@ -6,7 +6,7 @@ An Nvidia GPU container for PufferTank, PufferLib, and supported projects. We **
 
 ### 1. Install Docker
 
-Docker is a containerization technology to package code and its dependencies. Install and configure docker [Docker Desktop](https://docs.docker.com/desktop/) by following the official install instructions for your operationg system and then completing the post-installation steps. Linux users may also need to install [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installation-guide).
+Docker is a containerization technology to package code and its dependencies. Install and configure docker [Docker Desktop](https://docs.docker.com/desktop/) by following the official install instructions for your operating system and then completing the post-installation steps. Linux users may also need to install [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installation-guide).
 
 To test your docker installation: `docker run hello-world`.
 
