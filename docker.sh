@@ -4,8 +4,8 @@
 username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
 image="puffertank"
-tag="3.0"
-name="puffertank"
+tag="4.0"
+name="4.0"
 
 # Function for building Docker image
 build() {
@@ -42,6 +42,7 @@ test() {
             --name ${name} \
             --gpus all \
 	    --ipc host \
+	    --cgroupns=host \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
