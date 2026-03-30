@@ -1,14 +1,18 @@
-FROM nvcr.io/nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04
+FROM nvcr.io/nvidia/cuda:13.0.2-cudnn-devel-ubuntu24.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN mkdir -p /puffertank
 WORKDIR /puffertank
 
 # Core system packages
-RUN apt update && apt install -y \
-    git curl build-essential clang libomp-dev \
-    libnccl2=2.25.1-1+cuda12.8 libnccl-dev=2.25.1-1+cuda12.8 \
-    htop gdb llvm tmux psmisc sudo libglfw3 python3.12-dev
+# Custom installs without the cudnn base also need libnccl2 libnccl-dev
+RUN apt-get update && apt-get install -y \
+    curl wget sudo git build-essential clang htop gdb tmux psmisc \
+    llvm libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev
+
+# Nsight Systems for profiling
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nsight-systems-2025.6.3
 
 # PufferLib
 RUN git clone https://github.com/pufferai/pufferlib --branch 4.0
@@ -18,13 +22,13 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && . $HOME/.local/bin/env \
     && uv venv --python 3.12 --prompt 🐡 venv \
     && . venv/bin/activate \
-    && uv pip install torch --index-url https://download.pytorch.org/whl/cu128 \
+    && uv pip install torch --index-url https://download.pytorch.org/whl/cu130 \
     && uv pip install -e pufferlib
 
 # Neovim (btw)
 RUN . $HOME/.local/bin/env \
     && . venv/bin/activate \
-    && apt install -y ninja-build gettext cmake unzip \
+    && apt-get install -y ninja-build gettext cmake unzip \
     && git clone --single-branch --depth=1 https://github.com/neovim/neovim \
     && cd neovim \
     && make CMAKE_BUILD_TYPE=Release \
@@ -49,5 +53,5 @@ RUN echo "export PS1=$''" >> ~/.bashrc \
  && echo ". /puffertank/venv/bin/activate" >> ~/.bashrc \
  && echo "cd /puffertank/pufferlib" >> ~/.bashrc
 
-RUN apt clean
+RUN apt-get clean
 CMD ["/bin/bash"]
