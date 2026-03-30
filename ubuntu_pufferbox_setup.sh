@@ -42,9 +42,9 @@ apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # NVIDIA drivers
-apt-get install -y ubuntu-drivers
-sudo ubuntu-drivers install
-echo "Installation complete. Please reboot your system."
+#apt-get install -y ubuntu-drivers
+#sudo ubuntu-drivers install
+#echo "Installation complete. Please reboot your system."
 
 # Nvidia container (have to use Debian 11 bullseye for now)
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
