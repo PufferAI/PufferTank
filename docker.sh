@@ -28,6 +28,7 @@ build() {
 
 # Function for testing Docker image
 # Need this on ubuntu for x11: xhost +local:docker
+# Function for pushing Docker image
 test() {
     # Check if a Docker container with the same name already exists
     xhost +local:docker
@@ -47,7 +48,10 @@ test() {
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
             -v "$(pwd):/puffertank/docker" \
-            -e DISPLAY \
+            -e DISPLAY=$DISPLAY \
+            -e XAUTHORITY=/root/.Xauthority \
+            -v $HOME/.Xauthority:/root/.Xauthority \
+            --network host \
             -e WAYLAND_DISPLAY \
             -e NVIDIA_VISIBLE_DEVICES=all \
             -e NVIDIA_DRIVER_CAPABILITIES=all \
@@ -60,7 +64,6 @@ test() {
     docker exec -it ${name} bash
 }
 
-# Function for pushing Docker image
 push() {
     echo "Pushing Docker image ${username}/${name}:${tag}..."
     docker push ${username}/${name}:${tag}
