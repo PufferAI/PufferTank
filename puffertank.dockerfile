@@ -8,7 +8,7 @@ WORKDIR /puffertank
 # Custom installs without the cudnn base also need libnccl2 libnccl-dev
 RUN apt-get update && apt-get install -y \
     curl wget sudo git build-essential clang htop gdb tmux psmisc \
-    llvm libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev
+    llvm ccache libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev
 
 # Nsight Systems for profiling
 RUN apt-get update && \
