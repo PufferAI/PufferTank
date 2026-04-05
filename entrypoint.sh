@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # print CUDA version
-echo "PufferTank 3.0"
-echo "CUDA: $(nvcc --version | grep "release" | awk '{print $6}')"
+echo "PufferTank 4.0 (CUDA $(nvcc --version | grep "release" | awk '{print $6}'))"
 
 # check if NVIDIA driver is loaded
 if ! nvidia-smi > /dev/null 2>&1; then
