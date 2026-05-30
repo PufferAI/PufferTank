@@ -66,8 +66,7 @@ RUN echo "export PS1=$''" >> ~/.bashrc \
  && echo "alias diff='diff --color --palette=':ad=36:de=31:ln=33''" >> ~/.bashrc \
  && echo "alias pip='uv pip'" >> ~/.bashrc \
  && echo ". /puffertank/venv/bin/activate" >> ~/.bashrc \
- && echo "cd /puffertank/pufferlib" >> ~/.bashrc \
- && echo "export __GLX_VENDOR_LIBRARY_NAME=mesa" >> ~/.bashrc
+ && echo "cd /puffertank/pufferlib" >> ~/.bashrc
 
 RUN apt-get clean
 CMD ["/bin/bash"]
