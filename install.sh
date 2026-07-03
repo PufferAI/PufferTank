@@ -4,7 +4,7 @@ set -e
 # PufferLib standalone installer
 # Assumes Ubuntu 24.04 with CUDA 13.0 drivers already installed
 
-apt-get update && apt-get install -y \
+apt-get update && apt-get install -y --allow-change-held-packages \
     curl git build-essential clang \
     htop gdb tmux ccache \
     libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev \
