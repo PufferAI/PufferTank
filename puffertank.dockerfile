@@ -62,7 +62,7 @@ ENTRYPOINT ["/root/entrypoint.sh"]
 
 # Bashrc
 RUN echo "export PS1=$''" >> ~/.bashrc \
- && echo "alias vim='/usr/bin/nvim'" >> ~/.bashrc \ 
+ && echo "alias vim='/usr/bin/nvim'" >> ~/.bashrc \
  && echo "alias diff='diff --color --palette=':ad=36:de=31:ln=33''" >> ~/.bashrc \
  && echo "alias pip='uv pip'" >> ~/.bashrc \
  && echo ". /puffertank/venv/bin/activate" >> ~/.bashrc \
