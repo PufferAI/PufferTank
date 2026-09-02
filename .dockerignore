@@ -1,7 +1,5 @@
-.git
-.gitignore
-Dockerfile*
-docker-compose*
-README.md
-LICENSE
-.vscode
+# Only the two files the image COPYs belong in the build context.
+# Everything else (scripts, docs, .git, the broken puffertank symlink) is noise.
+*
+!entrypoint.sh
+!init.vim
