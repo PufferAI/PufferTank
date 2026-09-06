@@ -7,7 +7,7 @@ set -e
 apt-get update && apt-get install -y \
     curl git build-essential clang \
     htop gdb tmux ccache \
-    libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev \
+    libomp-dev libglfw3 libgl1-mesa-dev libgl1-mesa-dri xvfb xauth python3.12-dev \
     libnccl2 libnccl-dev
 
 # python -> python3 symlink if missing
@@ -29,3 +29,7 @@ uv pip install -e .
 
 bash build.sh breakout
 echo "Done. Test your installation with: puffer train breakout"
+echo "Remote raylib: ssh in (no -X), then:"
+echo "  source /path/to/puffertank/x11_ssh.sh   # or cd puffertank && ./docker.sh test"
+echo "  puffer eval breakout --load-model-path latest"
+echo "  open the printed http://<this-machine>:6080/"

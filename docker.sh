@@ -5,7 +5,7 @@ username="pufferai"  # replace with your Docker Hub username
 dockerfile=""  # Dockerfile to use
 image="puffertank"
 tag="4.0"
-name="puffertank"
+name="4.0"
 
 # Function for building Docker image
 build() {
@@ -27,11 +27,16 @@ build() {
 }
 
 # Function for testing Docker image
-# Need this on ubuntu for x11: xhost +local:docker
-# Function for pushing Docker image
+# Remote raylib: Xvfb + browser stream on :6080 (see x11_ssh.sh).
+# Local seated desktop still uses the native X window.
 test() {
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # shellcheck source=x11_ssh.sh
+    . "${SCRIPT_DIR}/x11_ssh.sh"
+    prepare_x11 || true
+    mapfile -t x11_flags < <(x11_docker_flags)
+
     # Check if a Docker container with the same name already exists
-    xhost +local:docker
     if [ "$(docker ps -aq -f name=${name})" ]; then
         # If the container exists and is stopped, start it
         echo "A Docker container with the name ${name} already exists. Starting it..."
@@ -48,9 +53,6 @@ test() {
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
             -v "$(pwd):/puffertank/docker" \
-            -e DISPLAY=$DISPLAY \
-            -e XAUTHORITY=/root/.Xauthority \
-            -v $HOME/.Xauthority:/root/.Xauthority \
             --network host \
             -e WAYLAND_DISPLAY \
             -e NVIDIA_VISIBLE_DEVICES=all \
@@ -58,10 +60,11 @@ test() {
             -e XDG_RUNTIME_DIR \
             -e PULSE_SERVER \
             -p 8000:8000 \
+            "${x11_flags[@]}" \
             ${username}/${image}:${tag} bash
     fi
-    # Attach to the running container
-    docker exec -it ${name} bash
+    # Attach with *this* SSH session's DISPLAY (not the one baked at docker run)
+    docker exec -it "${x11_flags[@]}" ${name} bash
 }
 
 push() {
@@ -74,8 +77,10 @@ usage() {
     echo "Usage: $0 command [-d dockerfile] [-n name] [-i image] [-t tag] [-u username]"
     echo "Commands:"
     echo "  build"
-    echo "  test"
+    echo "  test    # enter the container; remote raylib streams to :6080"
     echo "  push"
+    echo "Remote raylib: ssh user@host && ./docker.sh test && ./breakout"
+    echo "  then open the printed http://<host>:6080/  (ssh -X is not used)"
 }
 
 # Main script

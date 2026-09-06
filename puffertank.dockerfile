@@ -31,7 +31,7 @@ COPY init.vim /root/.config/nvim/init.vim
 RUN apt-get install -y\
     htop gdb tmux psmisc llvm ccache \
     sqlite3 \
-    libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev 
+    libomp-dev libglfw3 libgl1-mesa-dev libgl1-mesa-dri xvfb xauth python3.12-dev 
 
 # Nsight Systems for profiling
 RUN apt-get install -y --no-install-recommends nsight-systems-2025.6.3
