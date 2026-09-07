@@ -12,7 +12,7 @@ ARG NEOVIM_REF=master
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
-    && apt-get install -y --no-install-recommends ninja-build gettext cmake unzip
+    && apt-get install -y --no-install-recommends git ca-certificates build-essential ninja-build gettext cmake unzip
 
 RUN git clone --single-branch --depth=1 --branch ${NEOVIM_REF} https://github.com/neovim/neovim \
     && cd neovim \
@@ -34,7 +34,7 @@ WORKDIR /puffertank
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
-    && apt-get install -y curl wget sudo git build-essential clang \
+    && apt-get install -y curl wget sudo git build-essential clang unzip \
         htop gdb tmux psmisc llvm ccache \
         sqlite3 \
         libomp-dev libglfw3 libgl1-mesa-dev python3.12-dev
