@@ -1,7 +1,6 @@
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'supermaven-inc/supermaven-nvim'
-Plug 'wookayin/semshi', { 'do': ':UpdateRemotePlugins' }
 
 call plug#end()
 
@@ -91,21 +90,3 @@ hi link Debug           Special
 
 syntax enable
 filetype plugin on
-
-
-let g:semshi#excluded_hl_groups = ['local', 'global', 'free', 'attribute']
-
-function MyCustomHighlights()
-    hi semshiImported        ctermfg=214 guifg=Gray cterm=bold gui=bold
-    hi semshiParameter       ctermfg=75  guifg=DarkCyan
-    hi semshiParameterUnused ctermfg=117 guifg=DarkCyan cterm=underline gui=underline
-    hi semshiBuiltin         ctermfg=207 guifg=LightGray
-    hi semshiSelf            ctermfg=249 guifg=DarkGreen
-    hi semshiUnresolved      ctermfg=226 guifg=#ffff00 cterm=underline gui=underline
-    hi semshiSelected        ctermfg=231 guifg=Green ctermbg=161 guibg=#061a1a gui=bold
-
-    hi semshiErrorSign       ctermfg=231 guifg=Yellow ctermbg=160 guibg=#061a1a
-    hi semshiErrorChar       ctermfg=231 guifg=Yellow ctermbg=160 guibg=#061a1a
-    sign define semshiError text=E texthl=semshiErrorSign
-endfunction
-autocmd FileType python call MyCustomHighlights()

@@ -1,17 +1,22 @@
 #!/bin/bash
 
 # Default values
+# 4.0 is the live dev tank — never reuse its image tag or container name.
 username="pufferai"  # replace with your Docker Hub username
-dockerfile=""  # Dockerfile to use
+dockerfile="puffertank.dockerfile"
 image="puffertank"
-tag="4.0"
-name="4.0"
+tag="5.0"
+name="5.0"
 
 # Function for building Docker image
 build() {
     # Verify a Dockerfile was provided
     if [ -z "$dockerfile" ]; then
         echo "You must specify a Dockerfile with -d."
+        exit 1
+    fi
+    if [ "$tag" = "4.0" ] || [ "$name" = "4.0" ]; then
+        echo "Refusing to overwrite the live puffertank 4.0 image/container. Use tag/name 5.0."
         exit 1
     fi
     # Check if a Docker container with the same name already exists
@@ -27,49 +32,54 @@ build() {
 }
 
 # Function for testing Docker image
-# Remote raylib: Xvfb + browser stream on :6080 (see x11_ssh.sh).
-# Local seated desktop still uses the native X window.
+# Need this on ubuntu for x11: xhost +local:docker
 test() {
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    # shellcheck source=x11_ssh.sh
-    . "${SCRIPT_DIR}/x11_ssh.sh"
-    prepare_x11 || true
-    mapfile -t x11_flags < <(x11_docker_flags)
-
-    # Check if a Docker container with the same name already exists
-    if [ "$(docker ps -aq -f name=${name})" ]; then
-        # If the container exists and is stopped, start it
+    # Need this on ubuntu for x11
+    xhost +local:docker 2>/dev/null || true
+    if [ "$(docker ps -aq -f name=^/${name}$)" ]; then
         echo "A Docker container with the name ${name} already exists. Starting it..."
-        docker start ${name}
+        docker start ${name} >/dev/null
     else
-        # If the container does not exist, run a new one
-        echo "Running Docker image ${username}/${image}:${tag} and executing shell..."
-        docker run -it \
+        echo "Running Docker image ${username}/${image}:${tag}..."
+        docker run -d \
             --name ${name} \
             --gpus all \
-	    --ipc host \
-	    --cgroupns=host \
+            --ipc host \
+            --cgroupns=host \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v /mnt/wslg:/mnt/wslg \
             -v "$(pwd):/puffertank/docker" \
+            -e DISPLAY=$DISPLAY \
+            -e XAUTHORITY=/root/.Xauthority \
+            -v $HOME/.Xauthority:/root/.Xauthority \
             --network host \
             -e WAYLAND_DISPLAY \
             -e NVIDIA_VISIBLE_DEVICES=all \
             -e NVIDIA_DRIVER_CAPABILITIES=all \
             -e XDG_RUNTIME_DIR \
             -e PULSE_SERVER \
+            -e LANG=C.UTF-8 \
+            -e LC_ALL=C.UTF-8 \
             -p 8000:8000 \
-            "${x11_flags[@]}" \
-            ${username}/${image}:${tag} bash
+            ${username}/${image}:${tag} \
+            sleep infinity >/dev/null
     fi
-    # Attach with *this* SSH session's DISPLAY (not the one baked at docker run)
-    docker exec -it "${x11_flags[@]}" ${name} bash
+    echo "Attaching to ${name}. Exit the shell to detach (container stays up)."
+    docker exec -it \
+        -e LANG=C.UTF-8 \
+        -e LC_ALL=C.UTF-8 \
+        -e DISPLAY="${DISPLAY:-:0}" \
+        -e WAYLAND_DISPLAY \
+        -e XDG_RUNTIME_DIR \
+        -e XAUTHORITY=/root/.Xauthority \
+        -e __GLX_VENDOR_LIBRARY_NAME=mesa \
+        ${name} bash
 }
 
 push() {
-    echo "Pushing Docker image ${username}/${name}:${tag}..."
-    docker push ${username}/${name}:${tag}
+    echo "Pushing Docker image ${username}/${image}:${tag}..."
+    docker push ${username}/${image}:${tag}
 }
 
 # Function for displaying usage instructions
@@ -77,10 +87,8 @@ usage() {
     echo "Usage: $0 command [-d dockerfile] [-n name] [-i image] [-t tag] [-u username]"
     echo "Commands:"
     echo "  build"
-    echo "  test    # enter the container; remote raylib streams to :6080"
+    echo "  test"
     echo "  push"
-    echo "Remote raylib: ssh user@host && ./docker.sh test && ./breakout"
-    echo "  then open the printed http://<host>:6080/  (ssh -X is not used)"
 }
 
 # Main script
