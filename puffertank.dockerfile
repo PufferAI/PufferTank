@@ -27,17 +27,14 @@ RUN bash /puffertank/install.sh \
     && (nvim --headless +PlugInstall +qall || true) \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN echo "export LANG=C.UTF-8 LC_ALL=C.UTF-8" >> ~/.bashrc \
+ && echo "export PS1='🐡 \\[\\e[38;5;51m\\]>\\[\\e[0m\\] '" >> ~/.bashrc \
+ && echo "alias vim='/usr/bin/nvim'" >> ~/.bashrc \
+ && echo "alias diff='diff --color --palette=:ad=36:de=31:ln=33'" >> ~/.bashrc \
+ && echo "cd /puffertank/pufferlib" >> ~/.bashrc \
+ && echo "export __GLX_VENDOR_LIBRARY_NAME=mesa" >> ~/.bashrc
+
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
 ENTRYPOINT ["/root/entrypoint.sh"]
-
-RUN cat >> ~/.bashrc << 'EOF'
-export LANG=C.UTF-8 LC_ALL=C.UTF-8
-export PS1='🐡 \[\e[38;5;51m\]>\[\e[0m\] '
-alias vim='/usr/bin/nvim'
-alias diff='diff --color --palette=':ad=36:de=31:ln=33''
-cd /puffertank/pufferlib
-export __GLX_VENDOR_LIBRARY_NAME=mesa
-EOF
-
 CMD ["/bin/bash"]

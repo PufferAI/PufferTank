@@ -3,18 +3,12 @@
 # Default values
 # 4.0 is the live dev tank — never reuse its image tag or container name.
 username="pufferai"  # replace with your Docker Hub username
-dockerfile="puffertank.dockerfile"
 image="puffertank"
 tag="5.0"
 name="5.0"
 
 # Function for building Docker image
 build() {
-    # Verify a Dockerfile was provided
-    if [ -z "$dockerfile" ]; then
-        echo "You must specify a Dockerfile with -d."
-        exit 1
-    fi
     if [ "$tag" = "4.0" ] || [ "$name" = "4.0" ]; then
         echo "Refusing to overwrite the live puffertank 4.0 image/container. Use tag/name 5.0."
         exit 1
@@ -26,9 +20,8 @@ build() {
         docker stop ${name}
         docker rm ${name}
     fi
-    echo "Building Docker image ${username}/${image}:${tag} with Dockerfile ${dockerfile}..."
-    #docker build ${username}/${image}:${tag} -f ${dockerfile} .
-    docker buildx build --build-arg NVIDIA_VISIBLE_DEVICES=all --file ${dockerfile} -t ${username}/${image}:${tag} .
+    echo "Building Docker image ${username}/${image}:${tag}..."
+    docker buildx build --build-arg NVIDIA_VISIBLE_DEVICES=all --file puffertank.dockerfile -t ${username}/${image}:${tag} .
 }
 
 # Function for testing Docker image
@@ -84,7 +77,7 @@ push() {
 
 # Function for displaying usage instructions
 usage() {
-    echo "Usage: $0 command [-d dockerfile] [-n name] [-i image] [-t tag] [-u username]"
+    echo "Usage: $0 command [-n name] [-i image] [-t tag] [-u username]"
     echo "Commands:"
     echo "  build"
     echo "  test"
@@ -100,15 +93,14 @@ fi
 command=$1
 shift
 
-# Parse command-line arguments for Dockerfile, name, tag, and username
-while getopts n:i:t:u:d: flag
+# Parse command-line arguments for name, tag, and username
+while getopts n:i:t:u: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
         i) image=${OPTARG};;
         t) tag=${OPTARG};;
         u) username=${OPTARG};;
-        d) dockerfile=${OPTARG};;
     esac
 done
 
