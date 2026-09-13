@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Default values
-# 4.0 is the live dev tank — never reuse its image tag or container name.
 username="pufferai"  # replace with your Docker Hub username
 image="puffertank"
 tag="5.0"
